@@ -99,7 +99,7 @@ function md_exists()
     $allStaff = scandir("db/users/staff/");
     $countAllStaff = count($allStaff);
 
-    if ($countAllStaff > 0) {
+    if ($countAllStaff > 2) {
         return true;
     }
     return false;
