@@ -10,8 +10,6 @@ require_once("functions/alert.php");
     <p>
         <?php print_alert(); ?>
     </p>
-
-    <h3></h3>
     Provide the email associated with your account
 
     <form method="POST" action="processingForgot.php">
