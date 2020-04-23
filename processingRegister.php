@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once("functions/users.php");
 
 //collecting & validating data
 $errorCount = 0;
@@ -9,7 +10,7 @@ $email =$_POST["email"] != "" ? $_POST["email"] : $errorCount++;
 $designation =$_POST["designation"] != "" ? $_POST["designation"] : $errorCount++;
 $gender =$_POST["gender"] != "" ? $_POST["gender"] : $errorCount++;
 $department =$_POST["department"] != "" ? $_POST["department"] : $errorCount++;
-$password = $_POST["password"];
+$password = $_POST["password"] != "" ? $_POST["password"] : $errorCount++;
 
 $_SESSION["first_name"] = $first_name;
 $_SESSION["last_name"] = $last_name;
@@ -20,81 +21,40 @@ $_SESSION["department"] = $department;
 
 if($errorCount > 0){
     //errormessage
-    $_SESSION['error'] = "You have ".$errorCount." error(s) in your form";
+    set_alert("error", "You have ".$errorCount." error(s) in your form");
     header("Location: register.php");
-}
-else{
+}else{
 
+    $userObject = [
+        "id" => set_user_id($designation),
+        "first_name" => $first_name,
+        "last_name"=> $last_name,
+        "email" => $email,
+        'password' => password_hash($password, PASSWORD_DEFAULT), //password hashing
+        "gender" => $gender,
+        "designation" => $designation,
+        "department" => $department,
+        "register_date" => date("d.M.Y")
 
-    //continue to program
-    //count all users
-    $allusers = scandir("db/users/staff/");
-    $countAllUsers = count($allusers);
- 
-    $newUserId = $countAllUsers-1;
-
-    //creating super user
-    if($newUserId == 1){
-        $userObject = [
-            "id" => $newUserId,
-            "first_name" => $first_name,
-            "last_name"=> $last_name,
-            "email" => $email,
-            "password" => password_hash($password, PASSWORD_DEFAULT), //password hashing
-            "gender" => $gender,
-            "designation" => "superUser",
-            "department" => $department,
-            "registerDate" => date("d.M.Y")
-    
-        ];
-
-    }else{
-        $userObject = [
-            "id" => $newUserId,
-            "first_name" => $first_name,
-            "last_name"=> $last_name,
-            "email" => $email,
-            "password" => password_hash($password, PASSWORD_DEFAULT), //password hashing
-            "gender" => $gender,
-            "designation" => $designation,
-            "department" => $department,
-            "registerDate" => date("d.M.Y")
-    
-        ];
-    }
-
-
+    ];
 
     //check if user exists
-    for($counter = 0; $counter <= $countAllUsers; $counter++){
-        
-        $currentUser = $allusers[$counter];
-
-        if($currentUser == $email.".json"){
-            $_SESSION['error'] = "Registeration failed, User already exists";
+    
+        if(find_user($email)){
+            set_alert("error", "Registeration failed, User already exists");
             header("Location: register.php");
             die();
         }
-    }
 
 
-    file_put_contents("db/users/staff/".$email.".json", json_encode($userObject));
-   // print "<script type='text/javascript'>alert('Registeration Succesful')</script>";
-   // session_unset();
-
-    $_SESSION['message'] = "You can login in now as ". $first_name;
-
-    if($_SESSION['role'] == 'superUser'){
-        header("Location: dashboard.php");
-    }
-    else{
-        header("Location: login.php");
-
-    }
-    
+        //save user to db
+        if(is_patient()){
+            save_patients($userObject);
+        }else{
+            save_staff($userObject);            
+        }
+        set_alert("message", "You can login in now as ". $first_name);
+        redirect_to("login.php");
 }
 
-//Saving data to file
-
-//Return back to home with staus message
 ?>

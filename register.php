@@ -1,135 +1,158 @@
-<?php
-include_once("lib/header.php");
-if(isset($_SESSION['loggedin']) && $_SESSION['role'] != "superUser"){
-   header("Location: dashboard.php");
-}
- ?>
-<script language="JavaScript" src="regEx.js"></script>
-
-<p><strong>Welcome Please Register</strong></p>
-<p>All fields are <strong>REQURED</strong></p>
-
-<form method="POST" action="processingRegister.php">
-     <p>
           <?php
-          if (isset($_SESSION['error']) && !empty($_SESSION['error'])) {
-               print "<span style='color:red'>" . $_SESSION['error'] . "</span>";
-               //session_unset();
-               session_destroy(); 
+          include_once("lib/header.php");
+          require_once("functions/alert.php");
+          require_once("functions/users.php");
+          if (isset($_SESSION['loggedin']) && !empty($_SESSION['loggedin'])) {
+               header("Location: dashboard.php");
           }
-          ?>
-     </p>
-     <p>
-          <label>First Name</label><br />
+
           
-          <input 
-               <?php
-               
-                    if(isset($_SESSION['first_name'])){
-                         print "value =" . $_SESSION['first_name'];
-                    }
+          ?>
+     
+          <div class="container">
 
-               ?>
-                type="text" name="first_name" placeholder="First Name" pattern="(^[A-Za-z].{2,30})$" title="Name cannot be blank or conatin numbers
-                 and must be at least 2 or more characters" required/>
-     </p>
+               <div class="py-5 text-center ">
+                    <h2 class="display-4">Registration Form</h2>
+                    <p class="lead">All fields are <strong>REQUIRED</strong>.</p>
+               </div>
 
-     <p>
-          <label>Last Name</label><br />
-          <input
+               <form method="POST" action="processingRegister.php">
+                    <p>
+                         <?php print_alert(); ?>
+                    </p>
+                    <div class="row">
+                         <div class="col-md-6 mb-3">
+                              <label>First Name</label><br />
+
+                              <input <?php
+
+                                        if (isset($_SESSION['first_name'])) {
+                                             print "value =" . $_SESSION['first_name'];
+                                        }
+
+                                        ?> type="text" class="form-control" name="first_name" placeholder="First Name" />
+                              <div class="invalid-feedback">
+                                   Valid first name is required.
+                              </div>
+                         </div>
+
+
+                         <div class="col-md-6 mb-3">
+                              <label>Last Name</label><br />
+                              <input <?php
+                                        if (isset($_SESSION['last_name'])) {
+                                             print "value =" . $_SESSION['last_name'];
+                                        }
+
+                                        ?> type="text" class="form-control" name="last_name" placeholder="Last Name" />
+                              <div class="invalid-feedback">
+                                   Valid last name is required.
+                              </div>
+                         </div>
+                    </div>
+
+
+
+
+                    <div class="mb-3">
+                         <label>Email</label><br />
+                         <input <?php
+                                   if (isset($_SESSION['email'])) {
+                                        print "value =" . $_SESSION['email'];
+                                   }
+
+                                   ?> type="text" class="form-control" name="email" placeholder="Email" />
+                         <div class="invalid-feedback" style="width: 100%;">
+                              Your email is required.
+                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                         <label>Password</label><br />
+                         <input type="password" class="form-control" name="password" placeholder="Password" />
+                         <div class="invalid-feedback" style="width: 100%;">
+                              Your email is required.
+                         </div><br>
+
+                         <div class="row">
+                              <div class="col-md-3 mb-3">
+
+                                   <label>Gender</label><br />
+                                   <select name="gender" class="custom-select d-block w-100">
+                                        <option value="">Select One</option>
+                                        <option <?php
+                                                  if (isset($_SESSION['gender']) && $_SESSION['gender'] == 'Male') {
+                                                       print "selected";
+                                                  }
+
+                                                  ?>>Male</option>
+                                        <option <?php
+                                                  if (isset($_SESSION['gender']) && $_SESSION['gender'] == 'Female') {
+                                                       print "selected";
+                                                  }
+
+                                                  ?>>Female</option>
+                                   </select>
+                                   <div class="invalid-feedback">
+                                        Please select a valid gender.
+                                   </div>
+                              </div>
+
+                              <div class="col-md-4 mb-3">
+                                   <label>Designation</label><br />
+                                   <select name="designation" class="custom-select d-block w-100">
+                                        <option value="">Select One</option>
+                                        <option <?php
+                                                   if (md_exists()) {
+                                                       print "disabled";
+                                                  } else if (isset($_SESSION['designation']) && $_SESSION['designation'] == 'MD') {
+                                                       print "selected";
+                                                  }
+
+                                                  ?>>Medical Director</option>
+                                        <option <?php
+                                        if (!md_exists()) {
+                                             print "disabled";
+                                        } else if (isset($_SESSION['designation']) && $_SESSION['designation'] == 'Medical Team') {
+                                                       print "selected";
+                                                  }
+
+                                                  ?>>Medical Team</option>
+                                        <option <?php if (!md_exists()) {
+                                                       print "disabled";
+                                                  } else  if (isset($_SESSION['designation']) && $_SESSION['designation'] == 'Patient') {
+                                                       print "selected";
+                                                  }
+
+                                                  ?>>Patient</option>
+                                   </select>
+                                   <div class="invalid-feedback">
+                                        Please select a valid designation.
+                                   </div>
+                              </div>
+
+                              <div class="col-md-3 mb-3">
+                                   <label>Department</label><br />
+                                   <input <?php
+                                             if (isset($_SESSION['department'])) {
+                                                  print "value =" . $_SESSION['department'];
+                                             }
+
+                                             ?> type="text" class="form-control" name="department" placeholder="Department" />
+                                   <div class="invalid-feedback">
+                                        Valid department is required.
+                                   </div>
+                              </div>
+                         </div><br>
+
+                         <div class="text-center"> <button type="submit" class="btn btn-primary btn-lg ">Register</button></div>
+
+                         </p>
+
+               </form>
+          </div>
           <?php
-                    if(isset($_SESSION['last_name'])){
-                         print "value =".$_SESSION['last_name'];
-                    }
+          
+          include_once("lib/footer.php");
 
-               ?>
-                type="text" name="last_name" placeholder="Last Name" pattern="(^[A-Za-z].{2,30})$" title="Name cannot be blank or conatin numbers
-                 and must be at least 2 or more characters" required />
-     </p>
-
-     <p>
-          <label>Email</label><br />
-          <input 
-          <?php
-                    if(isset($_SESSION['email'])){
-                         print "value =".$_SESSION['email'];
-                    }
-
-               ?>
-               type="text" name="email" placeholder="Email" pattern="([a-z0-9._%+-]{5,})+@[a-z0-9.-]+\.[a-z]{2,}$" title="must be valid email, must not be empty,
-               must have @ and . in it and must be at least 5 or more characters" required  />
-     </p>
-
-     <p>
-          <label>Password</label><br />
-          <input type="password" name="password" placeholder="Password" /> <!-- pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-  title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" -->
-     </p>
-
-     <p>
-          <label>Gender</label><br />
-          <select name="gender" >
-               <option value="">Select One</option>
-               <option 
-               <?php
-                    if(isset($_SESSION['gender']) && $_SESSION['gender'] == 'Male'){
-                         print "selected";
-                    }
-
-               ?>
-               >Male</option>
-               <option 
-               <?php
-                    if(isset($_SESSION['gender']) && $_SESSION['gender'] == 'Female'){
-                         print "selected";
-                    }
-
-               ?>
-               >Female</option>
-          </select>
-     </p>
-
-     <p>
-          <label>Designation</label><br />
-          <select name="designation" >
-               <option value="">Select One</option>
-               <option <?php
-                    if(isset($_SESSION['designation']) && $_SESSION['designation'] == 'Medical Team'){
-                         print "selected";
-                    }
-
-               ?>
-               >Medical Team</option>
-               <option <?php
-                    if(isset($_SESSION['designation']) && $_SESSION['designation'] == 'Patient'){
-                         print "selected";
-                    }
-
-               ?>
-               >Patient</option>
-          </select>
-     </p>
-     <p>
-          <label>Department</label><br />
-          <input
-          <?php
-                    if(isset($_SESSION['department'])){
-                         print "value =".$_SESSION['department'];
-                    }
-
-               ?>
-                type="text" name="department" placeholder="Department" required/>
-     </p>
-
-
-     <p>
-          <button type="submit" id= "" onclick="">Register</button>
-     </p>
-
-</form>
-
-<?php
- include_once("lib/menu.php");
-include_once("lib/footer.php");
-
-?>
+          ?>
