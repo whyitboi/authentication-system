@@ -3,10 +3,10 @@ include_once("lib/header.php");
 require_once("functions/alert.php");
 require_once("functions/users.php");
 require_once("functions/redirect.php");
+
 if (!is_user_loggedIn()) {
     redirect_to("patientDashboard.php");
 }
-print $_SESSION['loggedin'];
 ?>
 
 <div class="container">

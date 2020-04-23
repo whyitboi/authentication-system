@@ -22,36 +22,41 @@ $_SESSION["email"] = $email;
 
 
 if ($errorCount > 0) {
+
+
     //errormessage
     set_alert("error", "You have " . $errorCount . " error(s) in your form");
     redirect_to("reset.php");
 } else {
 
-    $checkToken = is_user_loggedIn() ? true : find_token();
+    $checkToken = is_user_loggedIn() ? true : find_token($email);
+
+
 
             if ($checkToken) {
 
                     //collect password form user and DB
-                    if (find_user($email)) {
+                    if (find_user($email)) {   
 
                         $userObjects = find_user($email);
                         $userObjects->password =  password_hash($password, PASSWORD_DEFAULT);
 
+                        print $userObjects->designation." ".$email;
 
                         //User data deleted
-                        unlink("db/users/staff/" . $currentUser);
-                        unlink("db/tokens/" . $currentUser);
-
-                        //user data recreated
-                        if(is_not_staff()){
-                            save_patients($userObject);
+                        if(is_patient_args($userObjects->designation)){
+                            unlink("db/users/patients/" . $email.".json");
                         }else{
-                            save_staff($userObject);            
+                            unlink("db/users/staff/" . $email.".json");         
                         }
 
-
-                        //success message
-                        set_alert("message", "Password Reset successful");
+                        //user data recreated
+                        if(is_patient_args($userObjects->designation)){
+                            save_patients($userObjects);
+                        }else{
+                            save_staff($userObjects);            
+                        }                    
+                
 
                         //inform usser of password reset
                         $subject = "Password Reset Succesful";
@@ -62,9 +67,16 @@ if ($errorCount > 0) {
                         ini_set("sendmail_from", " no-reply@snh.org");
                         ini_set("smtp_port", "2525");
 
-                        send_email($subject, $txt, $email);
+                        if(send_email($subject, $txt, $email))
+                        {
+                            //sucess message
+                            set_alert("message", "Password Reset successful");
+                        }
 
-                        if (isset($_SESSION['loggedin'])) {
+
+                        if (is_user_loggedIn()) {
+
+
                             $_SESSION['loggedin'] = $userObjects->id;
                             $_SESSION['fullname'] = $userObjects->first_name . " " . $userObjects->last_name;
                             $_SESSION['role'] = $userObjects->designation;
@@ -77,8 +89,11 @@ if ($errorCount > 0) {
                             }
                             die();
                     }
+                    redirect_to("login.php");
+                    die();
     }
     //errormessage
     set_alert("error", "The password reset failed, Token/Email expired");
     redirect_to("login.php");
+}
 }

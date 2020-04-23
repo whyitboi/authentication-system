@@ -2,28 +2,34 @@
 include_once("lib/header.php");
 require_once("functions/alert.php");
 require_once("functions/users.php");
+require_once("functions/redirect.php");
+
 if (!is_user_loggedIn()) {
-    header("Location: login.php");
+    redirect_to("login.php");
 }
 ?>
 
-<h3>Dashboard Medical Team</h3>
+<div class="container">
 
-<p>
-            <?php print_error(); 
+
+    <div class='pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center'>
+        <p class='lead'>Dashboard</p>
+
+        <p>
+            <?php print_error();
             print_message();
             ?>
-</p>
+        </p>
+   <p> Welcome, <?php print $_SESSION['fullname']; ?>, You are logged in as <?php print $_SESSION['designation']; ?>
+    <br>Your Department is <?php print $_SESSION["department"]; ?> </p><br>
 
-Welcome, <?php print $_SESSION['fullname']; ?>, You are logged in as <?php print $_SESSION['designation']; ?> 
-<br>Your Department is  <?php print $_SESSION["department"]; ?> <br>
+    <a class="btn btn-bg btn-outline-primary" href="viewAppointments.php" >View appointments</a>
 
-This user was registered on <?php print $_SESSION['register_date']; ?> <br>
-with last login on <?php print $_SESSION['last_login']; ?><br>
-
-<a class="btn btn-bg btn-outline-primary" href="viewAppointments.php" >View Appointments</a>
+</div>
+</div>
 
 
 
 <?php 
 include_once("lib/footer.php"); ?>
+

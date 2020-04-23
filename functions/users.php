@@ -19,6 +19,15 @@ function is_patient()
     return false;
 }
 
+function is_patient_args($designation ="")
+{
+    if ($designation == "Patient") {
+        return true;
+    }
+    return false;
+}
+
+
 //Function to set the ID ofthe user
 function set_user_id($designation = "")
 {
@@ -45,7 +54,6 @@ function find_user($email = "")
 {
     if (!isset($email)) {
         set_alert("error", "User email is not set");
-        die();
     }
 
 
@@ -61,7 +69,6 @@ function find_user($email = "")
         if ($currentUser == $email . ".json") {
 
             $userObjects = json_decode(file_get_contents("db/users/staff/" . $currentUser));
-
             return $userObjects;
         }
     }
@@ -78,7 +85,6 @@ function find_user($email = "")
         if ($currentUser == $email . ".json") {
 
             $userObjects = json_decode(file_get_contents("db/users/patients/" . $currentUser));
-
             return $userObjects;
         }
     }
@@ -103,14 +109,16 @@ function md_exists()
 //Function to save staff to db
 function save_staff($userObject = "")
 {
-    file_put_contents("db/users/staff/" . $userObject['email'] . ".json", json_encode($userObject));
+    $Objectemail = $_SESSION['email'];
+    file_put_contents("db/users/staff/" . $Objectemail. ".json", json_encode($userObject));
 }
 
 
 //Function to save patient to db
 function save_patients($userObject = "")
 {
-    file_put_contents("db/users/patients/" . $userObject['email'] . ".json", json_encode($userObject));
+    $Objectemail = $_SESSION['email'];
+    file_put_contents("db/users/patients/" . $Objectemail . ".json", json_encode($userObject));
 }
 
 

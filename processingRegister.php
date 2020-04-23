@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once("functions/users.php");
+require_once("functions/redirect.php");
 
 //collecting & validating data
 $errorCount = 0;
@@ -22,7 +23,7 @@ $_SESSION["department"] = $department;
 if($errorCount > 0){
     //errormessage
     set_alert("error", "You have ".$errorCount." error(s) in your form");
-    header("Location: register.php");
+    redirect_to("register.php");
 }else{
 
     $userObject = [
@@ -42,7 +43,7 @@ if($errorCount > 0){
     
         if(find_user($email)){
             set_alert("error", "Registeration failed, User already exists");
-            header("Location: register.php");
+            redirect_to("register.php");
             die();
         }
 
@@ -53,8 +54,22 @@ if($errorCount > 0){
         }else{
             save_staff($userObject);            
         }
+
+
         set_alert("message", "You can login in now as ". $first_name);
-        redirect_to("login.php");
+
+        if(!is_user_loggedIn()){
+            redirect_to("login.php");
+        }else{
+            if ( ($_SESSION['designation'] == "MD")) {
+                redirect_to("mdDashboard.php");
+            } else if (($_SESSION['designation'] == "Medical Team")){
+                redirect_to("medicalTeamDashboard.php");
+            } else{
+                redirect_to("patientDashboard.php");
+            }
+        }
+        
 }
 
 ?>

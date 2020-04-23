@@ -14,13 +14,14 @@ function send_email(
 
 
     if ($passwordReset) {
-        set_alert("message", "The password reset link has been sent to ".$email);
-        redirect_to("login.php");
+        return true;
     } else {
-        set_alert("message", "Something went wrong could not send reset link to ".$email);
-        redirect_to("forgot.php");
+        return false;
     }
 }
+
+
+
 function is_email_set(){
     if(isset($_SESSION['email']) && !empty($_SESSION['email'])){
         return true;

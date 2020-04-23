@@ -38,7 +38,7 @@ if ($errorCount > 0) {
             $_SESSION['department'] = $userObjects->department;
             $_SESSION['register_date'] = $userObjects->register_date;
             $_SESSION['last_login'] = date("H:i, d.M.Y");
-            if (($_SESSION['loggedin'] == 1) && ($_SESSION['designation'] == "MD")) {
+            if ((is_user_loggedIn()) && ($_SESSION['designation'] == "MD")) {
                 redirect_to("mdDashboard.php");
             } else if (($_SESSION['designation'] == "Medical Team")){
                 redirect_to("medicalTeamDashboard.php");

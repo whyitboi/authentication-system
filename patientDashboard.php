@@ -6,27 +6,30 @@ if (!is_user_loggedIn()) {
 }
 ?>
 
-<h3>Dashboard Patient</h3>
-<p>
-            <?php print_error(); 
+
+<div class="container">
+
+
+    <div class='pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center'>
+        <p class='lead'>Dashboard</p>
+
+        <p>
+            <?php print_error();
             print_message();
             ?>
-</p>
+        </p>
 
-<p>
+        <p> Welcome, <?php print $_SESSION['fullname']; ?>, You are logged in as <?php print $_SESSION['designation']; ?>
+            <br>Your Department is <?php print $_SESSION["department"]; ?></p><br>
 
-Welcome, <?php print $_SESSION['fullname']; ?>, You are logged in as <?php print $_SESSION['designation']; ?> 
-<br>Your Department is  <?php print $_SESSION["department"]; ?> <br>
-
-This user was registered on <?php print $_SESSION['register_date']; ?> <br>
-with last login on <?php print $_SESSION['last_login']; ?><br>
+        <a class="btn btn-bg btn-outline-secondary" href="payBill.php">Pay Bill</a>
+        <a class="btn btn-bg btn-outline-primary" href="bookAppointment.php">Book Appointment</a>
 
 
-
-<a class="btn btn-bg btn-outline-secondary" href="test" >Pay Bill</a>
-<a class="btn btn-bg btn-outline-primary" href="bookAppointment.php">Book Appointment</a>
+    </div>
+</div>
 
 
 
-<?php 
+<?php
 include_once("lib/footer.php"); ?>

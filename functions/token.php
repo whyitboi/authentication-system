@@ -40,9 +40,7 @@ function find_token($email = ""){
         if (($currentTokenFile == $email . ".json") || (is_user_loggedIn())) {
 
             $tokenContent = json_decode(file_get_contents("db/token/" . $currentTokenFile));
-
-            $tokenObject = json_decode($tokenContent);
-            return $tokenObject;
+            return $tokenContent;
 
 
         }

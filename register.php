@@ -2,10 +2,8 @@
           include_once("lib/header.php");
           require_once("functions/alert.php");
           require_once("functions/users.php");
-          if (isset($_SESSION['loggedin']) && !empty($_SESSION['loggedin'])) {
-               header("Location: dashboard.php");
-          }
-
+          require_once("functions/redirect.php");
+          
           
           ?>
      
@@ -18,7 +16,8 @@
 
                <form method="POST" action="processingRegister.php">
                     <p>
-                         <?php print_alert(); ?>
+                         <?php print_error(); 
+                         print_message();?>
                     </p>
                     <div class="row">
                          <div class="col-md-6 mb-3">
